@@ -1,6 +1,6 @@
 package com.crisisconnect.model;
 
-import jakarta.persistence.*; // Entity annotations-er jonno
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity // Ei annotation-ti database table create korbe
+@Entity
 @Table(name = "messages")
 public class Message {
 
-    @Id // Primary Key
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -31,17 +31,29 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessagePriority priority;
 
-
     @PrePersist
     protected void onCreate() {
-        this.timestamp = LocalDateTime.now();
+        if (this.timestamp == null) {
+            this.timestamp = LocalDateTime.now();
+        }
     }
 
+    // --- ENUM DEFINITIONS ---
     public enum MessageType {
         TEXT, STATUS_UPDATE, EMERGENCY, LOCATION, SYSTEM
     }
 
     public enum MessagePriority {
         LOW, NORMAL, HIGH, CRITICAL
+    }
+
+    // --- FIX: Getter and Setter ---
+    
+    public String getContent() {
+        return this.content; 
+    }
+
+    public void setContent(String content) {
+        this.content = content; 
     }
 }
