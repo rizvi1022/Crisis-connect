@@ -17,7 +17,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: var(--bg-deep); color: var(--text-h); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Navbar Styling */
+        /* Existing Styles... */
         .navbar { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #2d3748; background: var(--bg-deep); flex-shrink: 0; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .logo-box { display: flex; align-items: center; gap: 12px; }
@@ -27,25 +27,28 @@
         .logo-text span { color: var(--accent); }
 
         .nav-right { display: flex; align-items: center; gap: 25px; }
-        .online-indicator { display: flex; align-items: center; gap: 8px; background: #1a202e; padding: 6px 14px; border-radius: 20px; border: 1px solid #2d3748; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); position: relative; }
-        .status-dot.online::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; border-radius:50%; background:inherit; animation: pulse 2s infinite; }
-        .status-label { font-size: 12px; font-weight: 600; color: #fff; }
+      /* আপনার আগের কোড */
+.online-indicator { display: flex; align-items: center; gap: 8px; background: #1a202e; padding: 6px 14px; border-radius: 20px; border: 1px solid #2d3748; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); position: relative; }
+.status-dot.online::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; border-radius:50%; background:inherit; animation: pulse 2s infinite; }
+.status-label { font-size: 12px; font-weight: 600; color: #fff; }
 
+.status-dot.offline {
+    background: var(--danger) !important;
+}
+
+.status-dot.offline::after {
+    display: none !important;
+}
+
+.status-label.offline-text {
+    color: var(--danger);
+}
         @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        /* Notification Styling */
         .notif-wrapper { position: relative; cursor: pointer; }
-        .notif-badge {
-            position: absolute; top: -5px; right: -5px; background: var(--danger);
-            color: white; font-size: 10px; font-weight: 800; padding: 2px 5px;
-            border-radius: 50%; display: none; border: 2px solid var(--bg-deep);
-        }
-        .notif-dropdown {
-            position: absolute; top: 45px; right: 0; width: 280px; background: var(--bg-card);
-            border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: none; z-index: 1001; max-height: 350px; overflow-y: auto;
-        }
+        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 50%; display: none; border: 2px solid var(--bg-deep); }
+        .notif-dropdown { position: absolute; top: 45px; right: 0; width: 280px; background: var(--bg-card); border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 1001; max-height: 350px; overflow-y: auto; }
         .notif-header { padding: 12px; border-bottom: 1px solid #2d3748; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
         .notif-item { padding: 12px; border-bottom: 1px solid #1e293b; font-size: 12px; transition: 0.2s; }
         .notif-item:hover { background: rgba(255,255,255,0.03); }
@@ -57,7 +60,6 @@
         .stat-val { display: block; font-size: 18px; font-weight: 700; color: #fff; }
         .stat-lbl { font-size: 9px; color: var(--text-p); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Sidebar & Layout */
         .app-main { display: grid; grid-template-columns: 300px 1fr; flex-grow: 1; overflow: hidden; }
         .sidebar { background: var(--bg-card); padding: 20px; border-right: 1px solid #2d3748; overflow-y: auto; display: flex; flex-direction: column; }
         .sidebar-filter { background: #0b0f1a; padding: 12px; border-radius: 12px; border: 1px solid #2d3748; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -73,13 +75,12 @@
         input:checked + .slider { background-color: var(--danger); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        .status-card { background: #0b0f1a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--success); }
+        .status-card { background: #0b0f1a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--success); cursor: pointer; }
         .status-card.critical { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
         .status-card.need-help { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
         .user-name { font-weight: 700; font-size: 14px; color: #fff; }
         .user-role-badge { font-size: 9px; background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; }
 
-        /* Chat UI Updates */
         .chat-container { display: flex; flex-direction: column; background: #080c14; overflow: hidden; position: relative; }
         .messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .filter-on .msg-wrap:not(.emergency) { display: none; }
@@ -88,51 +89,65 @@
         .msg-left { align-self: flex-start; }
         .msg-right { align-self: flex-end; flex-direction: row-reverse; }
 
-        /* Avatar Styling */
-        .msg-avatar {
-            width: 32px; height: 32px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 13px;
-            font-weight: 800; color: white; flex-shrink: 0; text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 5; transition: transform 0.2s; }
+        .msg-avatar:hover { transform: scale(1.1); }
 
         .msg-content-box { display: flex; flex-direction: column; max-width: 100%; }
         .msg-bubble { padding: 12px 18px; font-size: 14px; border-radius: 18px; line-height: 1.4; position: relative; }
         .msg-left .msg-bubble { background: #1e293b; color: #f1f5f9; border-bottom-left-radius: 4px; }
         .msg-right .msg-bubble { background: var(--accent); color: white; border-bottom-right-radius: 4px; }
-
         .msg-sender { font-size: 10px; font-weight: 700; color: var(--text-p); margin-bottom: 4px; display: block; padding-left: 4px; }
         .msg-right .msg-sender { text-align: right; padding-right: 4px; }
-
         .msg-time { font-size: 9px; color: var(--text-p); margin-top: 4px; font-weight: 600; opacity: 0.7; }
         .msg-right .msg-time { text-align: right; }
 
-        .msg-wrap.emergency { align-self: center; width: 90%; }
-        .msg-wrap.emergency .msg-bubble { border: 2px dashed var(--danger); color: var(--danger); text-align: center; width: 100%; font-weight: 800; background: rgba(239, 68, 68, 0.1); }
+        .msg-wrap.emergency {
+    align-self: center;
+    width: 90%;
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+}
 
-        /* Input Area & Quick Replies */
+.msg-wrap.emergency .msg-content-box {
+    flex: 1;
+}
+
+.msg-wrap.emergency .msg-bubble {
+    border: 2px dashed var(--danger);
+    color: var(--danger);
+    text-align: center;
+    width: 100%;
+    font-weight: 800;
+    background: rgba(239, 68, 68, 0.1);
+}
+        /* New Profile Modal Style */
+        .profile-card { text-align: center; padding: 20px; }
+        .profile-avatar-large { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: white; border: 4px solid #1e293b; }
+        .profile-name { font-size: 20px; font-weight: 800; color: white; margin-bottom: 5px; }
+        .profile-role { color: var(--accent); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; }
+        .profile-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .info-box { background: #0b0f1a; padding: 10px; border-radius: 12px; border: 1px solid #1e293b; }
+        .info-label { font-size: 9px; color: var(--text-p); text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .info-value { font-size: 12px; font-weight: 700; color: white; }
+
+        /* Existing Modal Styles... */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-card); padding: 30px; border-radius: 20px; width: 350px; border: 1px solid #334155; text-align: center; position: relative; animation: modalIn 0.3s ease-out; }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-modal { position: absolute; right: 20px; top: 15px; cursor: pointer; color: var(--text-p); font-size: 20px; }
+        .modal-input { width: 100%; background: #0b0f1a; border: 1px solid #334155; padding: 12px; border-radius: 10px; color: white; margin-bottom: 15px; outline: none; }
+
         .input-area { padding: 15px 25px; border-top: 1px solid #2d3748; background: var(--bg-deep); }
-
-        .quick-replies { display: flex; gap: 8px; padding-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
-        .quick-replies::-webkit-scrollbar { display: none; }
-        .reply-btn { background: #1e293b; border: 1px solid #334155; color: var(--text-h); padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .reply-btn:hover { background: var(--accent); border-color: var(--accent); }
-
         .message-row { display: flex; gap: 12px; align-items: center; }
         .msg-box { flex: 1; background: var(--bg-card); border: 1px solid #2d3748; padding: 10px 20px; border-radius: 30px; color: white; outline: none; }
-
         .action-btn { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 42px; height: 42px; background: var(--accent); color: white; transition: 0.2s; }
         .btn-sos { background: var(--danger); width: auto; padding: 0 25px; border-radius: 25px; font-weight: 800; }
         .btn-settings { background: #1e293b; border: 1px solid #334155; }
-
-        .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
         .btn-side { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #2d3748; background: #1e293b; color: white; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* Modals */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
-        .modal-content { background: var(--bg-card); padding: 30px; border-radius: 20px; width: 350px; border: 1px solid #334155; text-align: center; position: relative; }
-        .close-modal { position: absolute; right: 20px; top: 15px; cursor: pointer; color: var(--text-p); font-size: 20px; }
-        .modal-input { width: 100%; background: #0b0f1a; border: 1px solid #334155; padding: 12px; border-radius: 10px; color: white; margin-bottom: 15px; outline: none; }
+        .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .quick-replies { display: flex; gap: 8px; padding-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+        .reply-btn { background: #1e293b; border: 1px solid #334155; color: var(--text-h); padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
     </style>
 </head>
 <body>
@@ -217,6 +232,29 @@
     </div>
 </div>
 
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="toggleProfileModal(false)">×</span>
+        <div class="profile-card">
+            <div id="profAvatar" class="profile-avatar-large">?</div>
+            <h2 id="profName" class="profile-name">User Name</h2>
+            <span id="profRole" class="profile-role">Citizen</span>
+
+            <div class="profile-info-grid">
+                <div class="info-box">
+                    <span class="info-label">Area</span>
+                    <span id="profArea" class="info-value">Dhaka</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Status</span>
+                    <span id="profStatus" class="info-value">SAFE</span>
+                </div>
+            </div>
+            <button class="btn-side" style="margin-top:20px; background: var(--accent); border:none;" onclick="toggleProfileModal(false)">Close Profile</button>
+        </div>
+    </div>
+</div>
+
 <div id="settingsModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="toggleSettingsModal(false)">×</span>
@@ -233,6 +271,14 @@
         </select>
         <label class="side-label" style="text-align: left;">My Area</label>
         <input type="text" id="userArea" class="modal-input" placeholder="e.g. Dhaka">
+
+        <label class="side-label" style="text-align: left;">SOS Alert Sound</label>
+        <select id="alarmSelect" class="modal-input">
+            <option value="https://actions.google.com/sounds/v1/alarms/emergency_it_is_done.ogg">🚨 Classic Siren</option>
+            <option value="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">📢 Sharp Beep</option>
+            <option value="https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg">🔔 Pulse Alert</option>
+        </select>
+
         <button class="btn-side" style="background: var(--accent); border: none;" onclick="saveSettings()">Save Changes</button>
     </div>
 </div>
@@ -253,22 +299,49 @@
 
     let stompClient = null;
     let unreadCount = 0;
-    const sosAlarm = new Audio('https://replit.com/public/sounds/retro-game-emergency-alarm.mp3');
+    let myCoords = null;
+    let activeUsersData = {}; // To store user profiles for looking up
+    let selectedAlarm = localStorage.getItem('alarm_sound') || 'https://actions.google.com/sounds/v1/alarms/emergency_it_is_done.ogg';
+
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+            myCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+        }, err => console.log("Location access denied"), { enableHighAccuracy: true });
+    }
+
     let myIdSuffix = sessionStorage.getItem('user_id_suffix') || Math.floor(1000 + Math.random() * 9000);
     sessionStorage.setItem('user_id_suffix', myIdSuffix);
 
-    // Initial Profile Values
     document.getElementById('userName').value = localStorage.getItem('chat_name') || "";
     document.getElementById('userArea').value = localStorage.getItem('chat_area') || "";
     document.getElementById('userRole').value = localStorage.getItem('chat_role') || "Citizen";
+    document.getElementById('alarmSelect').value = selectedAlarm;
+
+    function playTimedAlarm() {
+        const audio = new Audio(selectedAlarm);
+        audio.play().catch(e => console.log("Sound error"));
+        setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 3000);
+    }
 
     function toggleSettingsModal(show) { document.getElementById("settingsModal").style.display = show ? "flex" : "none"; }
+    function toggleProfileModal(show) { document.getElementById("profileModal").style.display = show ? "flex" : "none"; }
+
+    function toggleNotifDropdown(event) {
+        event.stopPropagation();
+        const dropdown = document.getElementById('notifDropdown');
+        const badge = document.getElementById('notifBadge');
+        const isOpening = dropdown.style.display !== 'block';
+        dropdown.style.display = isOpening ? 'block' : 'none';
+        if(isOpening) { unreadCount = 0; badge.style.display = 'none'; badge.textContent = '0'; }
+    }
+
+    window.addEventListener('click', () => { document.getElementById('notifDropdown').style.display = 'none'; });
+
     function toggleQRModal(show) {
         document.getElementById("qrModal").style.display = show ? "flex" : "none";
         if(show) generateQRCode();
     }
 
-    // Avatar Color Helper
     function getAvatarColor(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
@@ -276,26 +349,46 @@
         return colors[Math.abs(hash) % colors.length];
     }
 
-    // Notification Logic
-    function toggleNotifDropdown(event) {
-        event.stopPropagation();
-        const dropdown = document.getElementById('notifDropdown');
-        const isOpening = dropdown.style.display !== 'block';
-        dropdown.style.display = isOpening ? 'block' : 'none';
-
-        if(isOpening) {
-            unreadCount = 0;
-            document.getElementById('notifBadge').style.display = 'none';
-        }
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return (R * c).toFixed(2);
     }
-
-    window.addEventListener('click', () => { document.getElementById('notifDropdown').style.display = 'none'; });
 
     function saveSettings() {
         localStorage.setItem('chat_name', document.getElementById('userName').value);
         localStorage.setItem('chat_area', document.getElementById('userArea').value);
         localStorage.setItem('chat_role', document.getElementById('userRole').value);
+        selectedAlarm = document.getElementById('alarmSelect').value;
+        localStorage.setItem('alarm_sound', selectedAlarm);
         toggleSettingsModal(false);
+        updateMyStatus();
+    }
+
+    // New Function: Smart Profile Viewer
+    function openUserProfile(userId) {
+        const data = activeUsersData[userId];
+        if(!data) return;
+
+        const nameOnly = data.userName.split('#')[0];
+        document.getElementById('profAvatar').textContent = nameOnly.charAt(0);
+        document.getElementById('profAvatar').style.background = getAvatarColor(nameOnly);
+        document.getElementById('profName').textContent = nameOnly;
+        document.getElementById('profRole').textContent = data.role || 'Citizen';
+        document.getElementById('profArea').textContent = data.area || 'Local';
+        document.getElementById('profStatus').textContent = data.status || 'SAFE';
+
+        const statusVal = document.getElementById('profStatus');
+        if(data.status === 'CRITICAL') statusVal.style.color = 'var(--danger)';
+        else if(data.status === 'NEED_HELP') statusVal.style.color = 'var(--warning)';
+        else statusVal.style.color = 'var(--success)';
+
+        toggleProfileModal(true);
     }
 
     function generateQRCode() {
@@ -344,25 +437,28 @@
 
     function handleStatusUpdate(entry) {
         if(!entry || !entry.userName) return;
+
+        // Save to cache for Profile Lookup
+        activeUsersData[entry.userName] = entry;
+
         const board = document.getElementById('statusBoard');
-        const id = 'card-' + entry.userName.replace(/[^\w-]/g, '');
-        let el = document.getElementById(id);
-        if (!el) { el = document.createElement('div'); el.id = id; board.prepend(el); }
+        const safeId = 'card-' + btoa(entry.userName).replace(/=/g, '');
+        let el = document.getElementById(safeId);
 
         const isCrit = entry.status === 'CRITICAL';
-        if (isCrit && !el.classList.contains('critical')) sosAlarm.play().catch(() => {});
+        if (isCrit && (!el || !el.classList.contains('critical'))) playTimedAlarm();
+
+        if (!el) {
+            el = document.createElement('div');
+            el.id = safeId;
+            el.onclick = () => openUserProfile(entry.userName);
+            board.prepend(el);
+        }
 
         const displayName = entry.userName.split('#')[0];
         const role = entry.role || "User";
         el.className = `status-card ${isCrit ? 'critical' : (entry.status === 'NEED_HELP' ? 'need-help' : '')}`;
-        el.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span class="user-name">${displayName} <span class="user-role-badge">${role}</span></span>
-                </div>
-                <span class="user-stat">${entry.status} • ${entry.area || "Local"}</span>
-            </div>
-        `;
+        el.innerHTML = `<div style="display: flex; flex-direction: column; gap: 4px;"><div style="display: flex; align-items: center; justify-content: space-between;"><span class="user-name">${displayName} <span class="user-role-badge">${role}</span></span></div><span class="user-stat">${entry.status} • ${entry.area || "Local"}</span></div>`;
         updateCounters();
     }
 
@@ -371,76 +467,131 @@
         document.getElementById('messageCount').textContent = document.querySelectorAll('.msg-wrap').length;
     }
 
-    function displayMessage(msg) {
-        if (!msg) return;
+  function displayMessage(msg) {
+    if (!msg) return;
 
-        const myFullName = (localStorage.getItem('chat_name') || "Anonymous") + "#" + myIdSuffix;
-        const isMe = (msg.senderName || "") === myFullName;
-        const senderNameOnly = (msg.senderName || "User").split('#')[0];
-        const firstLetter = senderNameOnly.charAt(0);
+    // ১. [Auto-Filtered] এবং অতিরিক্ত স্পেস পরিষ্কার করার লজিক
+    let cleanText = msg.content || "";
+    cleanText = cleanText.replace(/\[Auto-Filtered\]\s*/g, "").trim();
 
-        // Time Formatting
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // প্রতিটি মেসেজের জন্য একটি ইউনিক ID (স্ক্রল করার জন্য)
+    const msgId = "msg-" + Date.now() + Math.floor(Math.random() * 1000);
 
-        if(!isMe) {
-            unreadCount++;
-            const badge = document.getElementById('notifBadge');
-            badge.innerText = unreadCount;
-            badge.style.display = 'block';
-
-            const list = document.getElementById('notifList');
-            if(unreadCount === 1) list.innerHTML = '';
-
-            const item = document.createElement('div');
-            item.className = 'notif-item';
-            item.innerHTML = `<span class="notif-user">${senderNameOnly}</span><span class="notif-msg">${msg.content.substring(0, 35)}...</span>`;
-            list.prepend(item);
-            if(list.children.length > 5) list.lastChild.remove();
-        }
-
-        const chat = document.getElementById('messages');
-        const isSOS = msg.type === 'EMERGENCY';
-        const wrap = document.createElement('div');
-        wrap.className = isSOS ? 'msg-wrap emergency' : `msg-wrap ${isMe ? 'msg-right' : 'msg-left'}`;
-
-        let text = msg.content || "";
-        if (text.includes("http")) text = text.replace(/(https?:\/\/[^\s]+)/g, (url) => `<a href="${url}" target="_blank" style="color:white; font-weight:700;">📍 View Location</a>`);
-
-        // Message Layout with Avatar and Time
-        wrap.innerHTML = `
-            ${!isMe && !isSOS ? `<div class="msg-avatar" style="background:${getAvatarColor(senderNameOnly)}">${firstLetter}</div>` : ''}
-            <div class="msg-content-box">
-                ${!isSOS ? `<span class="msg-sender">${isMe ? 'You' : senderNameOnly}</span>` : ''}
-                <div class="msg-bubble">
-                    ${text}
-                </div>
-                <span class="msg-time">${timeStr}</span>
-            </div>
-            ${isMe && !isSOS ? `<div class="msg-avatar" style="background:${getAvatarColor(senderNameOnly)}">${firstLetter}</div>` : ''}
-        `;
-
-        chat.appendChild(wrap);
-        chat.scrollTop = chat.scrollHeight;
-        updateCounters();
+    if(!activeUsersData[msg.senderName]) {
+        activeUsersData[msg.senderName] = {
+            userName: msg.senderName,
+            role: msg.senderRole,
+            area: msg.senderArea,
+            status: 'ACTIVE'
+        };
     }
 
+    const myFullName = (localStorage.getItem('chat_name') || "Anonymous") + "#" + myIdSuffix;
+    const isMe = (msg.senderName || "") === myFullName;
+    const senderParts = (msg.senderName || "User#0000").split('#');
+    const senderNameOnly = senderParts[0];
+    const firstLetter = senderNameOnly.charAt(0);
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let displayText = cleanText;
+    let locationCard = "";
+
+    // Location detection logic
+    if (displayText.includes("google.com")) {
+        const coords = displayText.match(/(-?\d+\.\d+),(-?\d+\.\d+)/);
+        if (coords) {
+            const lat = coords[1]; const lon = coords[2];
+            let distInfo = "";
+            if (typeof myCoords !== 'undefined' && myCoords) {
+                const dist = calculateDistance(myCoords.lat, myCoords.lon, parseFloat(lat), parseFloat(lon));
+                distInfo = `<div style="font-size:10px; color:var(--warning); margin-bottom:5px;">📍 ${dist} km away</div>`;
+            }
+            locationCard = `<div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; margin-top: 8px; border: 1px solid var(--accent);">${distInfo}<a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank" style="display: block; background: var(--accent); color: white; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 11px;"><i class="fas fa-directions"></i> Get Directions</a></div>`;
+            displayText = "📍 Shared Location";
+        }
+    }
+
+    const chat = document.getElementById('messages');
+    const isSOS = msg.type === 'EMERGENCY';
+    if (isSOS && !isMe) playTimedAlarm();
+
+    const wrap = document.createElement('div');
+    wrap.id = msgId; // ID এসাইন করা হলো
+    wrap.className = isSOS ? 'msg-wrap emergency' : `msg-wrap ${isMe ? 'msg-right' : 'msg-left'}`;
+
+    wrap.innerHTML = `
+        ${!isMe ? `<div class="msg-avatar" onclick="openUserProfile('${msg.senderName}')" style="background:${getAvatarColor(senderNameOnly)};">${firstLetter}</div>` : ''}
+        <div class="msg-content-box" style="${isSOS ? 'flex: 1;' : ''}">
+            <span class="msg-sender" onclick="openUserProfile('${msg.senderName}')" style="cursor:pointer">${isMe ? 'You' : senderNameOnly} ${isSOS ? '🚨 (SOS)' : ''}</span>
+            <div class="msg-bubble">${displayText}${locationCard}</div>
+            <span class="msg-time">${timeStr}</span>
+        </div>
+        ${isMe && !isSOS ? `<div class="msg-avatar" onclick="openUserProfile('${msg.senderName}')" style="background:${getAvatarColor(senderNameOnly)};">${firstLetter}</div>` : ''}
+    `;
+
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+
+    // নোটিফিকেশন আপডেট এবং ক্লিক লজিক
+    if (!isMe) {
+        unreadCount++;
+        const badge = document.getElementById('notifBadge');
+        if(badge) { badge.textContent = unreadCount; badge.style.display = 'block'; }
+
+        const notifList = document.getElementById('notifList');
+        if (notifList) {
+            if (unreadCount === 1) notifList.innerHTML = '';
+            const notifItem = document.createElement('div');
+            notifItem.className = 'notif-item';
+            notifItem.style.cursor = 'pointer';
+            // ক্লিক করলে ওই মেসেজে স্ক্রল করবে
+            notifItem.onclick = () => scrollToMessage(msgId);
+
+            notifItem.innerHTML = `<span class="notif-user">${isSOS ? '🚨 SOS: ' : ''}${senderNameOnly}</span><span class="notif-msg">${displayText.substring(0, 35)}...</span>`;
+            notifList.prepend(notifItem);
+        }
+    }
+    updateCounters();
+}
+
+// ২. স্ক্রল করার নতুন ফাংশন (এটি script ট্যাগের ভেতরে যেকোনো জায়গায় দিলেই হবে)
+function scrollToMessage(id) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // হাইলাইট ইফেক্ট
+        const bubble = element.querySelector('.msg-bubble');
+        if (bubble) {
+            bubble.style.transition = "all 0.4s";
+            bubble.style.boxShadow = "0 0 25px var(--accent)";
+            bubble.style.transform = "scale(1.02)";
+            setTimeout(() => {
+                bubble.style.boxShadow = "none";
+                bubble.style.transform = "scale(1)";
+            }, 2000);
+        }
+
+        const dropdown = document.getElementById('notifDropdown');
+        if(dropdown) dropdown.style.display = 'none';
+    }
+}
     function sendQuickMessage(text) {
         const name = localStorage.getItem('chat_name');
         if(!name) return toggleSettingsModal(true);
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
             senderName: name + "#" + myIdSuffix,
-            content: text,
-            type: 'TEXT'
+            content: text, type: 'TEXT',
+            senderRole: localStorage.getItem('chat_role') || "Citizen",
+            senderArea: localStorage.getItem('chat_area') || "Local"
         }));
     }
 
     function updateMyStatus() {
         const name = localStorage.getItem('chat_name');
-        if (!name) return toggleSettingsModal(true);
+        if (!name) return;
         stompClient.send("/app/status.update", {}, JSON.stringify({
-            userId: name + "#" + myIdSuffix,
-            userName: name + "#" + myIdSuffix,
+            userId: name + "#" + myIdSuffix, userName: name + "#" + myIdSuffix,
             status: document.getElementById('myStatus').value,
             area: localStorage.getItem('chat_area') || "Local",
             role: localStorage.getItem('chat_role') || "Citizen"
@@ -454,8 +605,9 @@
         if(text) {
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
                 senderName: name + "#" + myIdSuffix,
-                content: text,
-                type: 'TEXT'
+                content: text, type: 'TEXT',
+                senderRole: localStorage.getItem('chat_role') || "Citizen",
+                senderArea: localStorage.getItem('chat_area') || "Local"
             }));
             document.getElementById('messageInput').value = '';
         }
@@ -467,7 +619,9 @@
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
             senderName: name + "#" + myIdSuffix,
             content: "🚨 EMERGENCY! I need immediate help!",
-            type: 'EMERGENCY'
+            type: 'EMERGENCY',
+            senderRole: localStorage.getItem('chat_role') || "Citizen",
+            senderArea: localStorage.getItem('chat_area') || "Local"
         }));
     }
 
@@ -479,13 +633,40 @@
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
                 senderName: name + "#" + myIdSuffix,
                 content: `📍 My Current Location: ${mapLink}`,
-                type: 'TEXT'
+                type: 'TEXT',
+                senderRole: localStorage.getItem('chat_role') || "Citizen",
+                senderArea: localStorage.getItem('chat_area') || "Local"
             }));
-        });
+        }, (err) => alert("Please enable GPS/Location access."));
     }
 
-    function clearFrontendChat() { document.getElementById('messages').innerHTML = ''; updateCounters(); }
+    function updateConnectionStatus() {
+    const dot = document.getElementById('onlineDot');
+    const label = document.getElementById('statusLabel');
 
+    if (navigator.onLine) {
+
+        dot.classList.remove('offline');
+        dot.classList.add('online');
+        label.textContent = "Online";
+        label.classList.remove('offline-text');
+    } else {
+
+        dot.classList.remove('online');
+        dot.classList.add('offline');
+        label.textContent = "Offline";
+        label.classList.add('offline-text');
+    }
+}
+
+
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
+
+
+updateConnectionStatus();
+
+    function clearFrontendChat() { document.getElementById('messages').innerHTML = ''; updateCounters(); }
     window.onload = connect;
 </script>
 </body>
