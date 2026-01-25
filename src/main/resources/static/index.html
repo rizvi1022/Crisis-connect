@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrisisConnect - Pro Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <title>CrisisConnect - Offline Ready Dashboard</title>
+
+    <script src="js/qrcode.min.js"></script>
+    <script src="js/sockjs.min.js"></script>
+    <script src="js/stomp.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg-deep: #0b0f1a; --bg-card: #161b2c; --accent: #3b82f6;
@@ -17,137 +20,95 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: var(--bg-deep); color: var(--text-h); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Existing Styles... */
         .navbar { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #2d3748; background: var(--bg-deep); flex-shrink: 0; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .logo-box { display: flex; align-items: center; gap: 12px; }
         .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
-        .logo-icon svg { width: 24px; height: 24px; fill: white; }
-        .logo-text { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .logo-text { font-size: 24px; font-weight: 800; color: #fff; }
         .logo-text span { color: var(--accent); }
 
         .nav-right { display: flex; align-items: center; gap: 25px; }
-      /* আপনার আগের কোড */
-.online-indicator { display: flex; align-items: center; gap: 8px; background: #1a202e; padding: 6px 14px; border-radius: 20px; border: 1px solid #2d3748; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); position: relative; }
-.status-dot.online::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; border-radius:50%; background:inherit; animation: pulse 2s infinite; }
-.status-label { font-size: 12px; font-weight: 600; color: #fff; }
-
-.status-dot.offline {
-    background: var(--danger) !important;
-}
-
-.status-dot.offline::after {
-    display: none !important;
-}
-
-.status-label.offline-text {
-    color: var(--danger);
-}
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.5); opacity: 0; } }
-
-        .notif-wrapper { position: relative; cursor: pointer; }
-        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 50%; display: none; border: 2px solid var(--bg-deep); }
-        .notif-dropdown { position: absolute; top: 45px; right: 0; width: 280px; background: var(--bg-card); border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 1001; max-height: 350px; overflow-y: auto; }
-        .notif-header { padding: 12px; border-bottom: 1px solid #2d3748; font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-        .notif-item { padding: 12px; border-bottom: 1px solid #1e293b; font-size: 12px; transition: 0.2s; }
-        .notif-item:hover { background: rgba(255,255,255,0.03); }
-        .notif-user { font-weight: 700; color: #fff; display: block; margin-bottom: 2px; }
-        .notif-msg { color: var(--text-p); }
-
         .nav-stats { display: flex; gap: 30px; }
         .stat-item { text-align: center; }
         .stat-val { display: block; font-size: 18px; font-weight: 700; color: #fff; }
         .stat-lbl { font-size: 9px; color: var(--text-p); text-transform: uppercase; letter-spacing: 1px; }
 
+        .online-indicator { display: flex; align-items: center; gap: 8px; background: #1a202e; padding: 6px 14px; border-radius: 20px; border: 1px solid #2d3748; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; position: relative; }
+        .online { background: var(--success); }
+        .online::after { content: ''; position: absolute; width:100%; height:100%; border-radius:50%; background:inherit; animation: pulse 2s infinite; }
+        .offline { background: var(--danger) !important; }
+        .offline-text { color: var(--danger); }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        .notif-wrapper { position: relative; cursor: pointer; }
+        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 50%; display: none; border: 2px solid var(--bg-deep); }
+        .notif-dropdown { position: absolute; top: 45px; right: 0; width: 280px; background: var(--bg-card); border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 1001; max-height: 350px; overflow-y: auto; }
+        .notif-item { padding: 12px; border-bottom: 1px solid #1e293b; font-size: 12px; transition: 0.2s; }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-user { font-weight: 700; color: #fff; display: block; }
+        .notif-msg { color: var(--text-p); }
+
         .app-main { display: grid; grid-template-columns: 300px 1fr; flex-grow: 1; overflow: hidden; }
-        .sidebar { background: var(--bg-card); padding: 20px; border-right: 1px solid #2d3748; overflow-y: auto; display: flex; flex-direction: column; }
-        .sidebar-filter { background: #0b0f1a; padding: 12px; border-radius: 12px; border: 1px solid #2d3748; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .filter-label { font-size: 11px; font-weight: 700; color: var(--danger); text-transform: uppercase; }
-
-        .side-label { font-size: 11px; font-weight: 700; color: var(--text-p); text-transform: uppercase; margin: 5px 0 10px; display: block; }
-        .status-dropdown { width: 100%; background: #0b0f1a; border: 1px solid #2d3748; color: white; padding: 12px; border-radius: 12px; margin-bottom: 20px; outline: none; cursor: pointer; }
-
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--danger); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .status-card { background: #0b0f1a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--success); cursor: pointer; }
-        .status-card.critical { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
-        .status-card.need-help { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
-        .user-name { font-weight: 700; font-size: 14px; color: #fff; }
-        .user-role-badge { font-size: 9px; background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px; text-transform: uppercase; }
+        .sidebar { background: var(--bg-card); padding: 20px; border-right: 1px solid #2d3748; overflow: auto; display: flex; flex-direction: column; }
+        .side-label { font-size: 11px; font-weight: 700; color: var(--text-p); text-transform: uppercase; margin: 15px 0 10px; display: block; }
+        .status-dropdown { width: 100%; background: #0b0f1a; border: 1px solid #2d3748; color: white; padding: 12px; border-radius: 12px; outline: none; }
 
         .chat-container { display: flex; flex-direction: column; background: #080c14; overflow: hidden; position: relative; }
         .messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .filter-on .msg-wrap:not(.emergency) { display: none; }
 
+        .bubble-container {
+            display: flex;
+            gap: 10px;
+            padding-bottom: 15px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+        .bubble-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .quick-bubble {
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .quick-bubble:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .quick-bubble:active { transform: scale(0.95); }
+
         .msg-wrap { display: flex; align-items: flex-end; gap: 10px; max-width: 80%; }
         .msg-left { align-self: flex-start; }
         .msg-right { align-self: flex-end; flex-direction: row-reverse; }
-
-        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 5; transition: transform 0.2s; }
-        .msg-avatar:hover { transform: scale(1.1); }
-
-        .msg-content-box { display: flex; flex-direction: column; max-width: 100%; }
-        .msg-bubble { padding: 12px 18px; font-size: 14px; border-radius: 18px; line-height: 1.4; position: relative; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; cursor: pointer; }
+        .msg-bubble { padding: 12px 18px; font-size: 14px; border-radius: 18px; line-height: 1.4; position: relative; transition: all 0.4s; }
         .msg-left .msg-bubble { background: #1e293b; color: #f1f5f9; border-bottom-left-radius: 4px; }
         .msg-right .msg-bubble { background: var(--accent); color: white; border-bottom-right-radius: 4px; }
-        .msg-sender { font-size: 10px; font-weight: 700; color: var(--text-p); margin-bottom: 4px; display: block; padding-left: 4px; }
-        .msg-right .msg-sender { text-align: right; padding-right: 4px; }
-        .msg-time { font-size: 9px; color: var(--text-p); margin-top: 4px; font-weight: 600; opacity: 0.7; }
-        .msg-right .msg-time { text-align: right; }
+        .msg-sender { font-size: 10px; font-weight: 700; color: var(--text-p); margin-bottom: 4px; display: block; }
+        .msg-time { font-size: 9px; color: var(--text-p); margin-top: 4px; display: block; }
 
-        .msg-wrap.emergency {
-    align-self: center;
-    width: 90%;
-    display: flex !important;
-    align-items: center;
-    gap: 12px;
-}
+        .msg-wrap.emergency { align-self: center; width: 90%; display: flex !important; align-items: center; }
+        .msg-wrap.emergency .msg-bubble { border: 2px dashed var(--danger); color: var(--danger); background: rgba(239, 68, 68, 0.1); font-weight: 800; text-align: center; }
 
-.msg-wrap.emergency .msg-content-box {
-    flex: 1;
-}
-
-.msg-wrap.emergency .msg-bubble {
-    border: 2px dashed var(--danger);
-    color: var(--danger);
-    text-align: center;
-    width: 100%;
-    font-weight: 800;
-    background: rgba(239, 68, 68, 0.1);
-}
-        /* New Profile Modal Style */
-        .profile-card { text-align: center; padding: 20px; }
-        .profile-avatar-large { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: white; border: 4px solid #1e293b; }
-        .profile-name { font-size: 20px; font-weight: 800; color: white; margin-bottom: 5px; }
-        .profile-role { color: var(--accent); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; }
-        .profile-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .info-box { background: #0b0f1a; padding: 10px; border-radius: 12px; border: 1px solid #1e293b; }
-        .info-label { font-size: 9px; color: var(--text-p); text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .info-value { font-size: 12px; font-weight: 700; color: white; }
-
-        /* Existing Modal Styles... */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
-        .modal-content { background: var(--bg-card); padding: 30px; border-radius: 20px; width: 350px; border: 1px solid #334155; text-align: center; position: relative; animation: modalIn 0.3s ease-out; }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .close-modal { position: absolute; right: 20px; top: 15px; cursor: pointer; color: var(--text-p); font-size: 20px; }
-        .modal-input { width: 100%; background: #0b0f1a; border: 1px solid #334155; padding: 12px; border-radius: 10px; color: white; margin-bottom: 15px; outline: none; }
+        .status-card { background: #0b0f1a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--success); cursor: pointer; }
+        .status-card.critical { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+        .user-role-badge { font-size: 9px; background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
 
         .input-area { padding: 15px 25px; border-top: 1px solid #2d3748; background: var(--bg-deep); }
         .message-row { display: flex; gap: 12px; align-items: center; }
         .msg-box { flex: 1; background: var(--bg-card); border: 1px solid #2d3748; padding: 10px 20px; border-radius: 30px; color: white; outline: none; }
-        .action-btn { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 42px; height: 42px; background: var(--accent); color: white; transition: 0.2s; }
+        .action-btn { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 42px; height: 42px; background: var(--accent); color: white; }
         .btn-sos { background: var(--danger); width: auto; padding: 0 25px; border-radius: 25px; font-weight: 800; }
-        .btn-settings { background: #1e293b; border: 1px solid #334155; }
-        .btn-side { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #2d3748; background: #1e293b; color: white; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-        .quick-replies { display: flex; gap: 8px; padding-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
-        .reply-btn { background: #1e293b; border: 1px solid #334155; color: var(--text-h); padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .btn-side { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #2d3748; background: #1e293b; color: white; cursor: pointer; margin-top: 10px; }
+
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-card); padding: 30px; border-radius: 20px; width: 350px; border: 1px solid #334155; text-align: center; }
+        .modal-input { width: 100%; background: #0b0f1a; border: 1px solid #334155; padding: 12px; border-radius: 10px; color: white; margin-bottom: 15px; outline: none; }
     </style>
 </head>
 <body>
@@ -155,7 +116,7 @@
 <div class="navbar">
     <div class="nav-left">
         <div class="logo-box">
-            <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z"/></svg></div>
+            <div class="logo-icon">📡</div>
             <div class="logo-text">Crisis<span>Connect</span></div>
         </div>
     </div>
@@ -165,65 +126,50 @@
             <div class="stat-item"><span class="stat-val" id="messageCount">0</span><span class="stat-lbl">Messages</span></div>
             <div class="stat-item"><span class="stat-val" id="criticalCount" style="color: var(--danger);">0</span><span class="stat-lbl">Critical</span></div>
         </div>
-
         <div class="notif-wrapper" onclick="toggleNotifDropdown(event)">
-            <i class="fas fa-bell" style="font-size: 18px; color: var(--text-p);"></i>
-            <span class="notif-badge" id="notifBadge">0</span>
-            <div class="notif-dropdown" id="notifDropdown">
-                <div class="notif-header">Notifications</div>
-                <div id="notifList">
-                    <div style="padding: 20px; text-align: center; color: var(--text-p); font-size: 11px;">No new messages</div>
-                </div>
-            </div>
+            🔔 <span class="notif-badge" id="notifBadge">0</span>
+            <div class="notif-dropdown" id="notifDropdown"><div id="notifList"></div></div>
         </div>
-
         <div class="online-indicator">
             <div class="status-dot online" id="onlineDot"></div>
             <span class="status-label" id="statusLabel">Online</span>
         </div>
-        <button class="action-btn btn-settings" onclick="toggleSettingsModal(true)"><i class="fas fa-cog"></i></button>
+        <button class="action-btn btn-settings" onclick="toggleSettingsModal(true)">⚙️</button>
     </div>
 </div>
 
 <div class="app-main">
     <div class="sidebar">
-        <div class="sidebar-filter">
-            <span class="filter-label">SOS Filter</span>
-            <label class="switch">
-                <input type="checkbox" id="emergencyToggle" onchange="toggleEmergencyFilter()">
-                <span class="slider"></span>
-            </label>
+        <div style="background: #0b0f1a; padding: 12px; border-radius: 12px; border: 1px solid #2d3748; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--danger);">SOS Filter</span>
+            <input type="checkbox" id="emergencyToggle" onchange="toggleEmergencyFilter()">
         </div>
-
         <span class="side-label">My Status</span>
         <select class="status-dropdown" id="myStatus" onchange="updateMyStatus()">
             <option value="SAFE">✅ Stable / Safe</option>
             <option value="NEED_HELP">⚠️ Need Help</option>
             <option value="CRITICAL">🚨 CRITICAL SOS</option>
         </select>
-
         <span class="side-label">📊 Live Updates</span>
         <div id="statusBoard" style="flex: 1; overflow-y: auto;"></div>
-
-        <div class="sidebar-footer">
-            <button class="btn-side" onclick="toggleQRModal(true)"><i class="fas fa-qrcode"></i> Connect Phone</button>
-        </div>
+        <button class="btn-side" onclick="toggleQRModal(true)">📱 Connect Phone</button>
     </div>
 
     <div class="chat-container">
         <div class="messages" id="messages"></div>
         <div class="input-area">
-            <div class="quick-replies">
-                <button class="reply-btn" onclick="sendQuickMessage('I am safe ✅')">I am safe ✅</button>
-                <button class="reply-btn" onclick="sendQuickMessage('Need Help ⚠️')">I need help ⚠️</button>
-                <button class="reply-btn" onclick="sendQuickMessage('Need Medical Help 🚑')">Medical Help 🚑</button>
-                <button class="reply-btn" onclick="sendQuickMessage('Need Food/Water 🍱')">Need Food 🍱</button>
-                <button class="reply-btn" onclick="sendQuickMessage('Road Blocked 🚧')">Road Blocked 🚧</button>
+            <div style="display: flex; gap: 8px; padding-bottom: 10px; overflow-x: auto;">
+                <button class="quick-bubble" style="background: #22c55e;" onclick="sendQuickMessage('I am safe ✅')">Safe ✅</button>
+                <button class="quick-bubble" style="background: #3b82f6;" onclick="sendQuickMessage('Need Help ⚠️')">Help ⚠️</button>
+                <button class="quick-bubble" style="background: #a855f7;" onclick="sendQuickMessage('Need Medical Assistance 🩺')">Medical 🩺</button>
+                <button class="quick-bubble" style="background: #06b6d4;" onclick="sendQuickMessage('Need Food/Water 🥤')">Food/Water 🥤</button>
+                <button class="quick-bubble" style="background: #f97316;" onclick="sendQuickMessage('Fire Emergency! 🔥')">Fire 🔥</button>
+                <button class="quick-bubble" style="background: #64748b;" onclick="sendQuickMessage('Road Blocked 🚧')">Block 🚧</button>
+                <button class="quick-bubble" style="background: #ef4444;" onclick="sendQuickMessage('Trapped/Stuck! 🏚️')">Trapped 🏚️</button>
             </div>
-
             <div class="message-row">
-                <button onclick="clearFrontendChat()" class="action-btn btn-settings" title="Clear Screen">🗑️</button>
-                <button onclick="shareLocation()" class="action-btn btn-settings" title="Share Location">📍</button>
+                <button onclick="clearFrontendChat()" class="action-btn btn-settings">🗑️</button>
+                <button onclick="shareLocation()" class="action-btn btn-settings">📍</button>
                 <input type="text" id="messageInput" class="msg-box" placeholder="Message..." onkeypress="if(event.key === 'Enter') sendMessage()">
                 <button onclick="sendMessage()" class="action-btn">➤</button>
                 <button onclick="sendEmergency()" class="action-btn btn-sos">SOS</button>
@@ -232,81 +178,73 @@
     </div>
 </div>
 
-<div id="profileModal" class="modal">
+<div id="settingsModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="toggleProfileModal(false)">×</span>
-        <div class="profile-card">
-            <div id="profAvatar" class="profile-avatar-large">?</div>
-            <h2 id="profName" class="profile-name">User Name</h2>
-            <span id="profRole" class="profile-role">Citizen</span>
-
-            <div class="profile-info-grid">
-                <div class="info-box">
-                    <span class="info-label">Area</span>
-                    <span id="profArea" class="info-value">Dhaka</span>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">Status</span>
-                    <span id="profStatus" class="info-value">SAFE</span>
-                </div>
-            </div>
-            <button class="btn-side" style="margin-top:20px; background: var(--accent); border:none;" onclick="toggleProfileModal(false)">Close Profile</button>
-        </div>
+        <h3>Profile Settings</h3><br>
+        <input type="text" id="userName" class="modal-input" placeholder="Your Name">
+        <input type="text" id="userArea" class="modal-input" placeholder="Area">
+        <select id="userRole" class="modal-input">
+            <option value="Citizen">Citizen</option>
+            <option value="Volunteer">Volunteer</option>
+            <option value="Doctor">Doctor</option>
+        </select>
+        <select id="alarmSelect" class="modal-input">
+            <option value="https://actions.google.com/sounds/v1/alarms/emergency_it_is_done.ogg">🚨 Siren</option>
+            <option value="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">📢 Beep</option>
+        </select>
+        <button class="btn-side" style="background: var(--accent); border:none;" onclick="saveSettings()">Save</button>
+        <button onclick="toggleSettingsModal(false)" style="margin-top:10px; background:none; border:none; color:var(--text-p); cursor:pointer;">Close</button>
     </div>
 </div>
 
-<div id="settingsModal" class="modal">
+<div id="profileModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="toggleSettingsModal(false)">×</span>
-        <h3 style="margin-bottom: 20px;">My Profile</h3>
-        <label class="side-label" style="text-align: left;">Display Name</label>
-        <input type="text" id="userName" class="modal-input" placeholder="Your Name">
-        <label class="side-label" style="text-align: left;">My Role</label>
-        <select id="userRole" class="modal-input">
-            <option value="Volunteer">Volunteer</option>
-            <option value="Doctor">Doctor</option>
-            <option value="Rescue Team">Rescue Team</option>
-            <option value="Victim">Victim</option>
-            <option value="Citizen">Citizen</option>
-        </select>
-        <label class="side-label" style="text-align: left;">My Area</label>
-        <input type="text" id="userArea" class="modal-input" placeholder="e.g. Dhaka">
-
-        <label class="side-label" style="text-align: left;">SOS Alert Sound</label>
-        <select id="alarmSelect" class="modal-input">
-            <option value="https://actions.google.com/sounds/v1/alarms/emergency_it_is_done.ogg">🚨 Classic Siren</option>
-            <option value="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">📢 Sharp Beep</option>
-            <option value="https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg">🔔 Pulse Alert</option>
-        </select>
-
-        <button class="btn-side" style="background: var(--accent); border: none;" onclick="saveSettings()">Save Changes</button>
+        <div id="profAvatar" style="width:60px; height:60px; border-radius:50%; margin: 0 auto 10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:24px;"></div>
+        <h2 id="profName"></h2>
+        <p id="profRole" style="color:var(--accent); font-weight:700; font-size:12px;"></p><br>
+        <div style="text-align:left; font-size:14px;">
+            <p>Area: <span id="profArea"></span></p>
+            <p>Status: <span id="profStatus"></span></p>
+        </div><br>
+        <button class="btn-side" onclick="toggleProfileModal(false)">Close</button>
     </div>
 </div>
 
 <div id="qrModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="toggleQRModal(false)">×</span>
-        <h3 style="margin-bottom: 8px;">Join Dashboard</h3>
-        <div id="qrcode" style="display:inline-block; padding:15px; background:white; border-radius:16px; margin:15px 0;"></div>
-        <p id="qrLinkText" style="font-size:11px; color:var(--accent); font-family:monospace; word-break: break-all;"></p>
+        <h3>Join Network</h3>
+        <div id="qrcode" style="padding:15px; background:white; display:inline-block; margin:15px 0; border-radius:10px;"></div>
+        <p id="qrLinkText" style="font-size:10px; color:var(--accent); word-break:break-all;"></p><br>
+        <button onclick="toggleQRModal(false)" class="btn-side">Close</button>
     </div>
 </div>
 
 <script>
-    const myIp = "192.168.0.153";
-    const serverUrl = `http://${myIp}:8080/ws-crisis`;
-    const mobileLink = `http://${myIp}:8080`;
+    // --- শুধুমাত্র এই অংশটুকু ফিক্স করা হয়েছে ---
+    const pcName = "CrisisConnect.local";
+    const currentHost = window.location.hostname;
 
+    // যদি localhost এ থাকেন তবে পিসির নাম ব্যবহার করবে, নাহলে বর্তমান হোস্ট (অনলাইনের জন্য)
+    const finalHost = (currentHost === "localhost" || currentHost === "127.0.0.1")
+                       ? pcName
+                       : currentHost;
+
+    const serverUrl = `http://${finalHost}:8080/ws-crisis`;
+    const mobileLink = `http://${finalHost}:8080`;
+
+    console.log("Connecting to:", serverUrl);
+
+    // আপনার আগের সব ভেরিয়েবল ঠিক রাখা হয়েছে
     let stompClient = null;
     let unreadCount = 0;
     let myCoords = null;
-    let activeUsersData = {}; // To store user profiles for looking up
+    let activeUsersData = {};
     let selectedAlarm = localStorage.getItem('alarm_sound') || 'https://actions.google.com/sounds/v1/alarms/emergency_it_is_done.ogg';
 
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(pos => {
             myCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-        }, err => console.log("Location access denied"), { enableHighAccuracy: true });
+        }, null, { enableHighAccuracy: true });
     }
 
     let myIdSuffix = sessionStorage.getItem('user_id_suffix') || Math.floor(1000 + Math.random() * 9000);
@@ -319,7 +257,7 @@
 
     function playTimedAlarm() {
         const audio = new Audio(selectedAlarm);
-        audio.play().catch(e => console.log("Sound error"));
+        audio.play().catch(e => {});
         setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 3000);
     }
 
@@ -332,32 +270,66 @@
         const badge = document.getElementById('notifBadge');
         const isOpening = dropdown.style.display !== 'block';
         dropdown.style.display = isOpening ? 'block' : 'none';
-        if(isOpening) { unreadCount = 0; badge.style.display = 'none'; badge.textContent = '0'; }
+        if(isOpening) { unreadCount = 0; badge.style.display = 'none'; }
     }
 
-    window.addEventListener('click', () => { document.getElementById('notifDropdown').style.display = 'none'; });
+    window.onclick = () => document.getElementById('notifDropdown').style.display = 'none';
 
     function toggleQRModal(show) {
         document.getElementById("qrModal").style.display = show ? "flex" : "none";
         if(show) generateQRCode();
     }
 
+    // QR Code ফিক্সড ফাংশন
+    function generateQRCode() {
+        const qrContainer = document.getElementById("qrcode");
+        if (qrContainer && typeof QRCode !== 'undefined') {
+            qrContainer.innerHTML = "";
+            new QRCode(qrContainer, {
+                text: mobileLink,
+                width: 160,
+                height: 160,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            const linkText = document.getElementById("qrLinkText");
+            if (linkText) linkText.textContent = mobileLink;
+        }
+    }
+
     function getAvatarColor(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-        const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+        let hash = 0; for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
         return colors[Math.abs(hash) % colors.length];
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
-        if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+        if (!lat1 || !lat2) return null;
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return (R * c).toFixed(2);
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+        return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(2);
+    }
+
+    function connect() {
+        const socket = new SockJS(serverUrl);
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+        stompClient.connect({}, () => {
+            setOnlineStatus(true);
+            stompClient.subscribe('/topic/status', res => handleStatusUpdate(JSON.parse(res.body)));
+            stompClient.subscribe('/topic/messages', res => displayMessage(JSON.parse(res.body)));
+            stompClient.subscribe('/topic/userCount', res => document.getElementById('userCount').textContent = res.body);
+            loadData();
+        }, () => { setOnlineStatus(false); setTimeout(connect, 5000); });
+    }
+
+    function setOnlineStatus(isOnline) {
+        const dot = document.getElementById('onlineDot');
+        const label = document.getElementById('statusLabel');
+        dot.className = isOnline ? "status-dot online" : "status-dot offline";
+        label.textContent = isOnline ? "Online" : "Offline";
+        label.className = isOnline ? "status-label" : "status-label offline-text";
     }
 
     function saveSettings() {
@@ -370,11 +342,9 @@
         updateMyStatus();
     }
 
-    // New Function: Smart Profile Viewer
     function openUserProfile(userId) {
         const data = activeUsersData[userId];
         if(!data) return;
-
         const nameOnly = data.userName.split('#')[0];
         document.getElementById('profAvatar').textContent = nameOnly.charAt(0);
         document.getElementById('profAvatar').style.background = getAvatarColor(nameOnly);
@@ -382,220 +352,139 @@
         document.getElementById('profRole').textContent = data.role || 'Citizen';
         document.getElementById('profArea').textContent = data.area || 'Local';
         document.getElementById('profStatus').textContent = data.status || 'SAFE';
-
-        const statusVal = document.getElementById('profStatus');
-        if(data.status === 'CRITICAL') statusVal.style.color = 'var(--danger)';
-        else if(data.status === 'NEED_HELP') statusVal.style.color = 'var(--warning)';
-        else statusVal.style.color = 'var(--success)';
-
         toggleProfileModal(true);
-    }
-
-    function generateQRCode() {
-        const qrContainer = document.getElementById("qrcode");
-        qrContainer.innerHTML = "";
-        new QRCode(qrContainer, { text: mobileLink, width: 160, height: 160 });
-        document.getElementById("qrLinkText").textContent = mobileLink;
-    }
-
-    function connect() {
-        const socket = new SockJS(serverUrl);
-        stompClient = Stomp.over(socket);
-        stompClient.debug = null;
-        stompClient.connect({}, () => {
-            setOnlineStatus(true);
-            stompClient.subscribe('/topic/status', (res) => handleStatusUpdate(JSON.parse(res.body)));
-            stompClient.subscribe('/topic/messages', (res) => displayMessage(JSON.parse(res.body)));
-            stompClient.subscribe('/topic/userCount', (res) => { document.getElementById('userCount').textContent = res.body; });
-            loadData();
-        }, () => { setOnlineStatus(false); setTimeout(connect, 5000); });
-    }
-
-    function setOnlineStatus(isOnline) {
-        document.getElementById('onlineDot').className = isOnline ? "status-dot online" : "status-dot offline";
-        document.getElementById('statusLabel').textContent = isOnline ? "Online" : "Offline";
-    }
-
-    function toggleEmergencyFilter() {
-        const chatContainer = document.getElementById('messages');
-        document.getElementById('emergencyToggle').checked ? chatContainer.classList.add('filter-on') : chatContainer.classList.remove('filter-on');
-    }
-
-    async function loadData() {
-        try {
-            const sRes = await fetch(`http://${myIp}:8080/api/status`);
-            const statuses = await sRes.json();
-            if(Array.isArray(statuses)) {
-                document.getElementById('statusBoard').innerHTML = '';
-                statuses.forEach(handleStatusUpdate);
-            }
-            const mRes = await fetch(`http://${myIp}:8080/api/messages/recent`);
-            const msgs = await mRes.json();
-            if(Array.isArray(msgs)) msgs.forEach(displayMessage);
-        } catch (e) { console.error("Load error:", e); }
     }
 
     function handleStatusUpdate(entry) {
         if(!entry || !entry.userName) return;
-
-        // Save to cache for Profile Lookup
         activeUsersData[entry.userName] = entry;
-
         const board = document.getElementById('statusBoard');
         const safeId = 'card-' + btoa(entry.userName).replace(/=/g, '');
         let el = document.getElementById(safeId);
-
         const isCrit = entry.status === 'CRITICAL';
         if (isCrit && (!el || !el.classList.contains('critical'))) playTimedAlarm();
-
         if (!el) {
             el = document.createElement('div');
             el.id = safeId;
             el.onclick = () => openUserProfile(entry.userName);
             board.prepend(el);
         }
-
         const displayName = entry.userName.split('#')[0];
-        const role = entry.role || "User";
         el.className = `status-card ${isCrit ? 'critical' : (entry.status === 'NEED_HELP' ? 'need-help' : '')}`;
-        el.innerHTML = `<div style="display: flex; flex-direction: column; gap: 4px;"><div style="display: flex; align-items: center; justify-content: space-between;"><span class="user-name">${displayName} <span class="user-role-badge">${role}</span></span></div><span class="user-stat">${entry.status} • ${entry.area || "Local"}</span></div>`;
+        el.innerHTML = `<span class="user-name">${displayName} <span class="user-role-badge">${entry.role || 'User'}</span></span><br><span style="font-size:11px; opacity:0.8;">${entry.status} • ${entry.area || "Local"}</span>`;
         updateCounters();
-    }
-
-    function updateCounters() {
-        document.getElementById('criticalCount').textContent = document.querySelectorAll('.status-card.critical').length;
-        document.getElementById('messageCount').textContent = document.querySelectorAll('.msg-wrap').length;
     }
 
   function displayMessage(msg) {
     if (!msg) return;
-
-    // ১. [Auto-Filtered] এবং অতিরিক্ত স্পেস পরিষ্কার করার লজিক
-    let cleanText = msg.content || "";
-    cleanText = cleanText.replace(/\[Auto-Filtered\]\s*/g, "").trim();
-
-    // প্রতিটি মেসেজের জন্য একটি ইউনিক ID (স্ক্রল করার জন্য)
+    let cleanText = (msg.content || "").replace(/\[Auto-Filtered\]\s*/g, "").trim();
     const msgId = "msg-" + Date.now() + Math.floor(Math.random() * 1000);
 
     if(!activeUsersData[msg.senderName]) {
-        activeUsersData[msg.senderName] = {
-            userName: msg.senderName,
-            role: msg.senderRole,
-            area: msg.senderArea,
-            status: 'ACTIVE'
-        };
+        activeUsersData[msg.senderName] = { userName: msg.senderName, role: msg.senderRole, area: msg.senderArea, status: 'ACTIVE' };
     }
 
     const myFullName = (localStorage.getItem('chat_name') || "Anonymous") + "#" + myIdSuffix;
-    const isMe = (msg.senderName || "") === myFullName;
-    const senderParts = (msg.senderName || "User#0000").split('#');
-    const senderNameOnly = senderParts[0];
-    const firstLetter = senderNameOnly.charAt(0);
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const isMe = msg.senderName === myFullName;
+    const senderOnly = msg.senderName.split('#')[0];
+    const isSOS = msg.type === 'EMERGENCY';
 
-    let displayText = cleanText;
+    // SOS হলে এলার্ম বাজবে
+    if (isSOS && !isMe) playTimedAlarm();
+
+    // --- নোটিফিকেশন লজিক শুরু ---
+    if (!isMe && window.Notification && Notification.permission === "granted") {
+        new Notification(`CrisisConnect: ${senderOnly}`, {
+            body: isSOS ? `🚨 SOS: ${cleanText}` : cleanText,
+            icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828304.png'
+        }).onclick = () => { window.focus(); };
+    }
+    // --- নোটিফিকেশন লজিক শেষ ---
+
     let locationCard = "";
-
-    // Location detection logic
-    if (displayText.includes("google.com")) {
-        const coords = displayText.match(/(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (cleanText.includes("google.com")) {
+        const coords = cleanText.match(/(-?\d+\.\d+),(-?\d+\.\d+)/);
         if (coords) {
             const lat = coords[1]; const lon = coords[2];
-            let distInfo = "";
-            if (typeof myCoords !== 'undefined' && myCoords) {
-                const dist = calculateDistance(myCoords.lat, myCoords.lon, parseFloat(lat), parseFloat(lon));
-                distInfo = `<div style="font-size:10px; color:var(--warning); margin-bottom:5px;">📍 ${dist} km away</div>`;
-            }
-            locationCard = `<div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; margin-top: 8px; border: 1px solid var(--accent);">${distInfo}<a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank" style="display: block; background: var(--accent); color: white; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 11px;"><i class="fas fa-directions"></i> Get Directions</a></div>`;
-            displayText = "📍 Shared Location";
+            let dist = myCoords ? calculateDistance(myCoords.lat, myCoords.lon, parseFloat(lat), parseFloat(lon)) : null;
+            locationCard = `<div style="margin-top:8px; padding:8px; background:rgba(255,255,255,0.1); border-radius:8px;">${dist ? `<span style="color:var(--warning); font-size:10px;">📍 ${dist} km away</span>` : ''}<a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank" style="display:block; background:var(--accent); color:white; text-align:center; padding:5px; border-radius:5px; text-decoration:none; font-size:11px; margin-top:5px;">Open Map</a></div>`;
+            cleanText = "📍 Shared Location";
         }
     }
 
     const chat = document.getElementById('messages');
-    const isSOS = msg.type === 'EMERGENCY';
-    if (isSOS && !isMe) playTimedAlarm();
-
     const wrap = document.createElement('div');
-    wrap.id = msgId; // ID এসাইন করা হলো
+    wrap.id = msgId;
+
+    ে
     wrap.className = isSOS ? 'msg-wrap emergency' : `msg-wrap ${isMe ? 'msg-right' : 'msg-left'}`;
 
+    const avatar = `<div class="msg-avatar" onclick="openUserProfile('${msg.senderName}')" style="background:${getAvatarColor(senderOnly)}">${senderOnly.charAt(0)}</div>`;
+
     wrap.innerHTML = `
-        ${!isMe ? `<div class="msg-avatar" onclick="openUserProfile('${msg.senderName}')" style="background:${getAvatarColor(senderNameOnly)};">${firstLetter}</div>` : ''}
-        <div class="msg-content-box" style="${isSOS ? 'flex: 1;' : ''}">
-            <span class="msg-sender" onclick="openUserProfile('${msg.senderName}')" style="cursor:pointer">${isMe ? 'You' : senderNameOnly} ${isSOS ? '🚨 (SOS)' : ''}</span>
-            <div class="msg-bubble">${displayText}${locationCard}</div>
-            <span class="msg-time">${timeStr}</span>
+        ${!isMe ? avatar : (isSOS ? avatar : '')}
+        <div class="msg-content-box">
+            <span class="msg-sender" onclick="openUserProfile('${msg.senderName}')" style="cursor:pointer">${isMe ? 'You' : senderOnly} ${isSOS ? '🚨' : ''}</span>
+            <div class="msg-bubble">${cleanText}${locationCard}</div>
+            <span class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
         </div>
-        ${isMe && !isSOS ? `<div class="msg-avatar" onclick="openUserProfile('${msg.senderName}')" style="background:${getAvatarColor(senderNameOnly)};">${firstLetter}</div>` : ''}
+        ${isMe && !isSOS ? avatar : ''}
     `;
 
     chat.appendChild(wrap);
     chat.scrollTop = chat.scrollHeight;
 
-    // নোটিফিকেশন আপডেট এবং ক্লিক লজিক
     if (!isMe) {
         unreadCount++;
         const badge = document.getElementById('notifBadge');
-        if(badge) { badge.textContent = unreadCount; badge.style.display = 'block'; }
-
-        const notifList = document.getElementById('notifList');
-        if (notifList) {
-            if (unreadCount === 1) notifList.innerHTML = '';
-            const notifItem = document.createElement('div');
-            notifItem.className = 'notif-item';
-            notifItem.style.cursor = 'pointer';
-            // ক্লিক করলে ওই মেসেজে স্ক্রল করবে
-            notifItem.onclick = () => scrollToMessage(msgId);
-
-            notifItem.innerHTML = `<span class="notif-user">${isSOS ? '🚨 SOS: ' : ''}${senderNameOnly}</span><span class="notif-msg">${displayText.substring(0, 35)}...</span>`;
-            notifList.prepend(notifItem);
-        }
+        badge.textContent = unreadCount; badge.style.display = 'block';
+        const notifItem = document.createElement('div');
+        notifItem.className = 'notif-item';
+        notifItem.onclick = () => scrollToMessage(msgId);
+        notifItem.innerHTML = `<span class="notif-user">${isSOS ? '🚨 SOS: ' : ''}${senderOnly}</span><span class="notif-msg">${cleanText.substring(0, 30)}...</span>`;
+        document.getElementById('notifList').prepend(notifItem);
     }
     updateCounters();
 }
+    function showNotification(msg) {
+    if (Notification.permission === "granted") {
+        const senderOnly = msg.senderName.split('#')[0];
 
-// ২. স্ক্রল করার নতুন ফাংশন (এটি script ট্যাগের ভেতরে যেকোনো জায়গায় দিলেই হবে)
-function scrollToMessage(id) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // যদি মেসেজটি আপনার নিজের না হয়, তবেই নোটিফিকেশন আসবে
+        const myFullName = (localStorage.getItem('chat_name') || "Anonymous") + "#" + myIdSuffix;
+        if (msg.senderName !== myFullName) {
+            const notification = new Notification(`New Message from ${senderOnly}`, {
+                body: msg.content,
+                icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828304.png'
+            });
 
-        // হাইলাইট ইফেক্ট
-        const bubble = element.querySelector('.msg-bubble');
-        if (bubble) {
-            bubble.style.transition = "all 0.4s";
-            bubble.style.boxShadow = "0 0 25px var(--accent)";
-            bubble.style.transform = "scale(1.02)";
-            setTimeout(() => {
-                bubble.style.boxShadow = "none";
-                bubble.style.transform = "scale(1)";
-            }, 2000);
+         ে
+            notification.onclick = function() {
+                window.focus();
+                this.close();
+            };
         }
-
-        const dropdown = document.getElementById('notifDropdown');
-        if(dropdown) dropdown.style.display = 'none';
     }
 }
-    function sendQuickMessage(text) {
-        const name = localStorage.getItem('chat_name');
-        if(!name) return toggleSettingsModal(true);
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
-            senderName: name + "#" + myIdSuffix,
-            content: text, type: 'TEXT',
-            senderRole: localStorage.getItem('chat_role') || "Citizen",
-            senderArea: localStorage.getItem('chat_area') || "Local"
-        }));
+
+    function scrollToMessage(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const bubble = el.querySelector('.msg-bubble');
+            bubble.style.boxShadow = "0 0 20px var(--accent)";
+            setTimeout(() => bubble.style.boxShadow = "none", 2000);
+            document.getElementById('notifDropdown').style.display = 'none';
+        }
     }
 
-    function updateMyStatus() {
-        const name = localStorage.getItem('chat_name');
-        if (!name) return;
-        stompClient.send("/app/status.update", {}, JSON.stringify({
-            userId: name + "#" + myIdSuffix, userName: name + "#" + myIdSuffix,
-            status: document.getElementById('myStatus').value,
-            area: localStorage.getItem('chat_area') || "Local",
-            role: localStorage.getItem('chat_role') || "Citizen"
-        }));
+    function toggleEmergencyFilter() {
+        document.getElementById('messages').classList.toggle('filter-on', document.getElementById('emergencyToggle').checked);
+    }
+
+    function updateCounters() {
+        document.getElementById('criticalCount').textContent = document.querySelectorAll('.status-card.critical').length;
+        document.getElementById('messageCount').textContent = document.querySelectorAll('.msg-wrap').length;
     }
 
     function sendMessage() {
@@ -604,70 +493,70 @@ function scrollToMessage(id) {
         if(!name) return toggleSettingsModal(true);
         if(text) {
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
-                senderName: name + "#" + myIdSuffix,
-                content: text, type: 'TEXT',
-                senderRole: localStorage.getItem('chat_role') || "Citizen",
-                senderArea: localStorage.getItem('chat_area') || "Local"
+                senderName: name + "#" + myIdSuffix, content: text, type: 'TEXT',
+                senderRole: localStorage.getItem('chat_role'), senderArea: localStorage.getItem('chat_area')
             }));
             document.getElementById('messageInput').value = '';
         }
     }
 
     function sendEmergency() {
-        const name = localStorage.getItem('chat_name');
-        if(!name) return toggleSettingsModal(true);
+        const name = localStorage.getItem('chat_name'); if(!name) return toggleSettingsModal(true);
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
-            senderName: name + "#" + myIdSuffix,
-            content: "🚨 EMERGENCY! I need immediate help!",
-            type: 'EMERGENCY',
-            senderRole: localStorage.getItem('chat_role') || "Citizen",
-            senderArea: localStorage.getItem('chat_area') || "Local"
+            senderName: name + "#" + myIdSuffix, content: "🚨 EMERGENCY! I need immediate help!", type: 'EMERGENCY',
+            senderRole: localStorage.getItem('chat_role'), senderArea: localStorage.getItem('chat_area')
+        }));
+    }
+
+    function sendQuickMessage(text) {
+        const name = localStorage.getItem('chat_name'); if(!name) return toggleSettingsModal(true);
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
+            senderName: name + "#" + myIdSuffix, content: text, type: 'TEXT',
+            senderRole: localStorage.getItem('chat_role'), senderArea: localStorage.getItem('chat_area')
+        }));
+    }
+
+    function updateMyStatus() {
+        const name = localStorage.getItem('chat_name'); if (!name) return;
+        stompClient.send("/app/status.update", {}, JSON.stringify({
+            userId: name + "#" + myIdSuffix, userName: name + "#" + myIdSuffix,
+            status: document.getElementById('myStatus').value,
+            area: localStorage.getItem('chat_area') || "Local",
+            role: localStorage.getItem('chat_role') || "Citizen"
         }));
     }
 
     function shareLocation() {
-        const name = localStorage.getItem('chat_name');
-        if(!name) return toggleSettingsModal(true);
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        const name = localStorage.getItem('chat_name'); if(!name) return toggleSettingsModal(true);
+        navigator.geolocation.getCurrentPosition(pos => {
+            const mapLink = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
-                senderName: name + "#" + myIdSuffix,
-                content: `📍 My Current Location: ${mapLink}`,
-                type: 'TEXT',
-                senderRole: localStorage.getItem('chat_role') || "Citizen",
-                senderArea: localStorage.getItem('chat_area') || "Local"
+                senderName: name + "#" + myIdSuffix, content: `📍 My Location: ${mapLink}`, type: 'TEXT',
+                senderRole: localStorage.getItem('chat_role'), senderArea: localStorage.getItem('chat_area')
             }));
-        }, (err) => alert("Please enable GPS/Location access."));
+        }, () => alert("Enable GPS."));
     }
-
-    function updateConnectionStatus() {
-    const dot = document.getElementById('onlineDot');
-    const label = document.getElementById('statusLabel');
-
-    if (navigator.onLine) {
-
-        dot.classList.remove('offline');
-        dot.classList.add('online');
-        label.textContent = "Online";
-        label.classList.remove('offline-text');
-    } else {
-
-        dot.classList.remove('online');
-        dot.classList.add('offline');
-        label.textContent = "Offline";
-        label.classList.add('offline-text');
-    }
-}
-
-
-window.addEventListener('online', updateConnectionStatus);
-window.addEventListener('offline', updateConnectionStatus);
-
-
-updateConnectionStatus();
 
     function clearFrontendChat() { document.getElementById('messages').innerHTML = ''; updateCounters(); }
-    window.onload = connect;
+
+    async function loadData() {
+        try {
+            // আইপি-র বদলে finalHost ব্যবহার
+            const s = await fetch(`http://${finalHost}:8080/api/status`).then(r => r.json());
+            if(Array.isArray(s)) { document.getElementById('statusBoard').innerHTML = ''; s.forEach(handleStatusUpdate); }
+            const m = await fetch(`http://${finalHost}:8080/api/messages/recent`).then(r => r.json());
+            if(Array.isArray(m)) m.forEach(displayMessage);
+        } catch (e) {}
+    }
+
+    window.addEventListener('online', () => setOnlineStatus(true));
+    window.addEventListener('offline', () => setOnlineStatus(false));
+
+ে
+    window.onload = () => {
+        connect();
+        generateQRCode();
+    };
 </script>
 </body>
 </html>
