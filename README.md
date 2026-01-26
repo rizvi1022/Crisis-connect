@@ -4,21 +4,19 @@ A Spring Boot-based emergency communication system that enables local network co
 
 ## 🎯 Features
 
-Real-time Messaging: Powered by WebSockets and STOMP, ensuring sub-second delivery of critical information.
+ ⚡ **Real-time Messaging** | Powered by **WebSockets & STOMP**, ensuring sub-second delivery of critical information when every second counts.
 
-Role-based Access Control: Distinct permissions for Admins and Citizens, ensuring secure management.
+ 🛡️ **Role-based Access** | Distinct permissions for **Admins** and **Citizens**, ensuring a secure and controlled management environment. 
 
-Emergency Priority Logic: Messages marked as 'EMERGENCY' are automatically elevated to CRITICAL priority.
+ ⚠️ **Priority Logic** | Intelligent system where messages marked as `EMERGENCY` are automatically elevated to **CRITICAL** priority.
 
-Live Geolocation Sharing: Integrated with the browser's Geolocation API to share and display the sender's live coordinates.
+ 📍 **Live Geolocation** | Deep integration with the browser's **Geolocation API** to share and display sender coordinates in real-time. 
 
-Admin Command Center: Authorized administrators can edit or delete messages to keep the information stream accurate.
+ 🛠️ **Admin Command Center** | Empowering authorized admins to edit or delete messages, keeping the information stream 100% accurate. 
 
-Persistent File-based Storage: Utilizing H2 file-based storage so no data is lost even if the server restarts.
+ 💾 **Persistent Storage** | Utilizing **H2 File-based storage**, ensuring zero data loss even during server restarts. 
 
-Network-wide Accessibility: Designed to work across a Local Area Network (LAN), allowing mobile devices to connect to a central PC server.
-## 📋 Architecture
-
+ 🌐 **LAN Accessibility** | Optimized for **Local Area Networks (LAN)**, allowing mobile devices to connect seamlessly to a central PC server. 
 ```
 ┌─────────────────┐
 │  Web Dashboard  │ (WebSocket)
