@@ -4,14 +4,19 @@ A Spring Boot-based emergency communication system that enables local network co
 
 ## 🎯 Features
 
-- **Offline Communication**: Works on local WiFi/hotspot networks without internet
-- **Real-time Messaging**: Instant message delivery via WebSocket and TCP sockets
-- **Status Board**: Live status updates for all connected users
-- **Emergency Alerts**: Priority emergency messaging with visual indicators
-- **Multi-threaded**: Handles multiple concurrent connections efficiently
-- **Cross-platform**: Web interface + Java socket clients
-- **No External Dependencies**: No cloud services or internet required
+Real-time Messaging: Powered by WebSockets and STOMP, ensuring sub-second delivery of critical information.
 
+Role-based Access Control: Distinct permissions for Admins and Citizens, ensuring secure management.
+
+Emergency Priority Logic: Messages marked as 'EMERGENCY' are automatically elevated to CRITICAL priority.
+
+Live Geolocation Sharing: Integrated with the browser's Geolocation API to share and display the sender's live coordinates.
+
+Admin Command Center: Authorized administrators can edit or delete messages to keep the information stream accurate.
+
+Persistent File-based Storage: Utilizing H2 file-based storage so no data is lost even if the server restarts.
+
+Network-wide Accessibility: Designed to work across a Local Area Network (LAN), allowing mobile devices to connect to a central PC server.
 ## 📋 Architecture
 
 ```
